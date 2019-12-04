@@ -5,6 +5,7 @@ var bodyParser = require("body-parser");
 var cors = require("cors");
 var dotenv = require("dotenv");
 var mongoose = require("mongoose");
+var helmet = require("helmet");
 
 var apiRoutes = require("./routes/api.js");
 var fccTestingRoutes = require("./routes/fcctesting.js");
@@ -13,6 +14,9 @@ var runner = require("./test-runner");
 dotenv.config({ path: "./.env" });
 
 var app = express();
+app.use(helmet());
+app.use(helmet.noCache());
+app.use(helmet.hidePoweredBy({ setTo: "PHP 4.2.0" }));
 var DB = process.env.DB_CONNECTION.replace(
   "<password>",
   process.env.DB_PASSWORD
