@@ -13,7 +13,7 @@ exports.createBook = async (req, res) => {
     });
   } catch (err) {
     res.status(400).json({
-      error: "Error. Please try again."
+      error: err.errors.title.message
     });
   }
 };
