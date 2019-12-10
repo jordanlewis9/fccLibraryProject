@@ -5,6 +5,13 @@ var bookSchema = mongoose.Schema({
     type: String,
     required: ["true", "The title of the book is required"]
   },
-  comment: [String]
+  comments: [String],
+  commentcount: {
+    type: Number,
+    default: 0
+  }
 });
-module.exports = mongoose.model("Book", bookSchema);
+
+var Book = mongoose.model("Book", bookSchema);
+
+module.exports = Book;

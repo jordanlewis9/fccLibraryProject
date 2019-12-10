@@ -3,10 +3,12 @@ var Book = require("./../model/bookModel");
 exports.createBook = async (req, res) => {
   try {
     var newBook = await Book.create({ title: req.body.title });
+    console.log("isWorking");
     res.status(200).json({
       status: "success",
       data: {
-        newBook
+        title: newBook.title,
+        _id: newBook._id
       }
     });
   } catch (err) {
@@ -18,7 +20,8 @@ exports.createBook = async (req, res) => {
 
 exports.getBooks = async (req, res) => {
   try {
-    var books = await Book.find();
+    var books = await Book.find({}, "-comments");
+    console.log(books);
     res.status(200).json({
       status: "success",
       data: {
@@ -47,7 +50,7 @@ exports.deleteAllBooks = async (req, res) => {
 
 exports.getBook = async (req, res) => {
   try {
-    var singleBook = await Book.findById(req.params.id);
+    var singleBook = await Book.findById(req.params.id, "-commentcount");
     res.status(200).json({
       status: `found book with id ${req.params.id}`,
       data: {
@@ -73,14 +76,19 @@ exports.addComment = async (req, res) => {
     var comment = await Book.findByIdAndUpdate(
       req.params.id,
       {
-        $push: { comment: req.body.comment }
+        $push: { comments: req.body.comments }
       },
       { new: true }
     );
+    var updateCount = await Book.findByIdAndUpdate(req.params.id, {
+      commentcount: comment.comments.length
+    });
     res.status(200).json({
       status: "success",
       data: {
-        comment
+        _id: comment._id,
+        title: comment.title,
+        comments: comment.comments
       }
     });
   } catch (err) {
